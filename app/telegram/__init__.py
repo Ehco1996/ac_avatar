@@ -1,5 +1,5 @@
+import asyncio
 import os
-import time
 
 from telethon import TelegramClient
 from telethon.tl.functions.photos import UpdateProfilePhotoRequest
@@ -18,10 +18,10 @@ async def update_profile_photo_cron(client, sleep_time=10):
     photos = await client.get_profile_photos("me")
     print(f"你当前的所有的头像列表:", [p.id for p in photos], "\n")
 
-    for p in photos:
+    for p in photos[::-1]:
         await client(UpdateProfilePhotoRequest(p))
-        print("当前头像=", p.id)
-        time.sleep(sleep_time)
+        print("当前头像:", p.id)
+        await asyncio.sleep(sleep_time)
 
 
 async def update_forver(client):
@@ -36,5 +36,10 @@ def run():
     client.start()
     client.loop.create_task(update_forver(client))
 
-    print("请用  Ctrl+C 来结束当前程序)")
-    client.run_until_disconnected()
+    print("请用  Ctrl+C 来结束当前程序 \n")
+
+    try:
+        client.loop.run_forever()
+    except KeyboardInterrupt:
+        client.loop.stop()
+        print("👋🏻再见了您嘞")

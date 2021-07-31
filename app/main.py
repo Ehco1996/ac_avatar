@@ -1,4 +1,8 @@
-from telegram import run
+from app.telegram import run
 
-if __name__ == "__main__":
+
+def main():
     run()
+
+
+main()
